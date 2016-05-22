@@ -1,0 +1,10 @@
+[client]
+{
+    #----------------------------------------------------------
+    # Read (and possibly create) mysql password
+    #----------------------------------------------------------
+
+    use esmith::util;
+    my $pw = esmith::util::genRandomPassword('/etc/my.pwd');
+    $OUT .= "password=$pw";
+}

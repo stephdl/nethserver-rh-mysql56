@@ -1,0 +1,67 @@
+#!/bin/sh
+# This script will restore mysql backup.
+# The script mut be executed before /etc/.my.cnf is replaced by an expand-template
+
+backup_dir=/var/lib/nethserver/backup/rh-mysql56/
+
+if [ ! -f $backup_dir/mysql.dump ]; then
+    exit 0
+fi
+
+init_dir=/etc/e-smith/sql/init56/
+if [ ! -d $init_dir ]; then
+    mkdir -p $init_dir
+fi
+
+echo "Restoring rh-mysql56 backup...";
+/sbin/service rh-mysql56-mysqld status  >/dev/null
+if [ $? -eq 0 ]; then
+    /sbin/service rh-mysql56-mysqld stop >/dev/null
+fi
+
+# Restarting mysql without privileges
+#/usr/bin/mysqld_safe --skip-grant-tables&
+/usr/bin/scl enable rh-mysql56 '/opt/rh/rh-mysql56/root/usr/bin/mysqld_safe --skip-grant-tables&'
+#/usr/bin/mysql -e 'show databases'&> /dev/null
+/usr/bin/mysql56 -e 'show databases'&> /dev/null
+while [ $? -ne 0 ]  # wait mysql to start
+do
+    sleep 1
+#    /usr/bin/mysql -e 'show databases'&> /dev/null
+    /usr/bin/mysql56 -e 'show databases'&> /dev/null
+done
+
+
+# drop mysql db if exists (backup restored after nethserver-mysql install)
+/usr/bin/mysql56 -e "drop database mysql" 2>/dev/null
+/usr/bin/mysql56 < $backup_dir/mysql.dump
+if [ $? -ne 0 ]; then
+    echo "Can't load mysql.dump backup"
+    exit 1
+fi
+
+rm -f $backup_dir/mysql.dump
+
+# restart mysqld as normal daemon
+/sbin/service rh-mysql56-mysqld restart
+
+# set new password accessing with the old one
+/usr/bin/mysqladmin56 password `cat /etc/my.pwd`
+if [ $? -ne 0 ]; then
+    echo "Can't change root password"
+    exit 1
+fi
+
+# update .my.cnf with new password
+/sbin/e-smith/expand-template /root/.my.cnf
+
+# update privileges tables (if needed)
+#/usr/bin/mysql_upgrade >/dev/null
+/usr/bin/scl enable rh-mysql56 '/opt/rh/rh-mysql56/root/usr/bin/mysql_upgrade --socket=/var/lib/mysql/rh-mysql56.sock'
+# restore all dumps
+for db in $(ls $backup_dir/*.dump 2> /dev/null)
+do
+    mv $db /etc/e-smith/sql/init56/01_$(basename $db .dump).sql
+done
+
+exec /etc/e-smith/events/actions/nethserver-rh-mysql56-init

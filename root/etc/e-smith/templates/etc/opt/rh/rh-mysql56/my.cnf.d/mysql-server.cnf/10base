@@ -1,0 +1,19 @@
+#
+# These groups are read by MySQL server.
+# Use it for options that only the server (but not clients) should see
+#
+# See the examples of server my.cnf files in /usr/share/mysql/
+#
+#
+# this is read by the standalone daemon and embedded servers
+[server]
+#
+datadir=/var/opt/rh/rh-mysql56/lib/mysql
+socket=/var/lib/mysql/rh-mysql56.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+{
+    my $port = ${'fw-rh-mysql56-mysqld'}{'TCPPort'} || "3307";
+    $OUT .= "port=$port\n";
+}

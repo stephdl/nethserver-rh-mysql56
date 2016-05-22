@@ -1,0 +1,2 @@
+#!/bin/bash
+/opt/rh/rh-mysql56/root/usr/bin/mysqladmin --socket=/var/lib/mysql/rh-mysql56.sock "$@"

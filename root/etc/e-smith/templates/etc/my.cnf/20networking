@@ -1,0 +1,4 @@
+{
+    my $localonly = $mysqld{LocalNetworkingOnly} || "no";
+    $OUT = ($localonly eq 'yes') ? "skip-networking" : "# networking is enabled";
+}

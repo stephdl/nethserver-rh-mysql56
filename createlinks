@@ -1,0 +1,74 @@
+#!/usr/bin/perl -w
+
+use esmith::Build::CreateLinks  qw(:all);
+
+#--------------------------------------------------
+# actions for nethserver-mysql-update event
+#--------------------------------------------------
+
+my $event = "nethserver-rh-mysql56-update";
+
+event_actions($event,
+              'initialize-default-databases' => '00',
+              'nethserver-rh-mysql56-conf' => '10',
+              'rh-mysql56-mysqld_service' => '20');
+templates2events("/etc/opt/rh/rh-mysql56/my.cnf.d/mysql-server.cnf",  $event);
+templates2events("/root/.my.cnf",  $event);
+templates2events("/opt/rh/rh-mysql56/root/bin/set.password",  $event);
+#event_services($event, 'rh-mysql56-mysqld' => 'restart');
+
+
+#--------------------------------------------------
+# actions for nethserver-rh-mysql56-save event
+#--------------------------------------------------
+
+$event = "nethserver-rh-mysql56-save";
+
+templates2events("/etc/opt/rh/rh-mysql56/my.cnf.d/mysql-server.cnf",  $event);
+templates2events("/root/.my.cnf",  $event);
+
+event_actions($event,
+              'firewall-adjust' => '10',
+              'rh-mysql56-mysqld_service' => '20');
+#event_services($event, 'rh-mysql56-mysqld' => 'restart');
+
+
+#--------------------------------------------------
+# actions for migration-import event
+#--------------------------------------------------
+
+#$event = "migration-import";
+#event_actions($event, 'nethserver-mysql-migrate' => 50);
+
+
+#--------------------------------------------------
+# actions for pre-backup-data event
+#--------------------------------------------------
+
+$event = "pre-backup-data";
+event_actions($event, 'rh-mysql56-dump-tables' => 50);
+
+
+#--------------------------------------------------
+# actions for post-backup-data event
+#--------------------------------------------------
+
+$event = "post-backup-data";
+event_actions($event, 'rh-mysql56-delete-dumped-tables' => 50);
+
+#--------------------------------------------------
+# actions for post-restore-data event
+#--------------------------------------------------
+
+$event = "post-restore-data";
+event_actions($event, 
+                     'rh-mysql56-load-tables' => '02',
+                     'rh-mysql56-delete-dumped-tables' => '60',
+                     'rh-mysql56-mysqld_service' => '90');
+
+templates2events("/etc/my.cnf",  $event);
+templates2events("/root/.my.cnf",  $event);
+#event_services($event, 'rh-mysql56-mysqld' => 'restart');
+
+
+exit;

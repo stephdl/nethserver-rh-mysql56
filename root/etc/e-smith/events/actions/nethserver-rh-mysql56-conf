@@ -1,0 +1,96 @@
+#!/usr/bin/perl
+#
+# Copyright (C) 2012 Nethesis S.r.l.
+# http://www.nethesis.it - support@nethesis.it
+# 
+# This script is part of NethServer.
+# 
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+# 
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+use strict;
+use NethServer::Service;
+use esmith::util;
+#use Expect;
+
+# initialize mysql installation
+
+#my $command = "/opt/rh/rh-mysql56/root/usr/bin/mysql_secure_installation";
+#my $timeout = 5;
+my $passwd_file = "/etc/my.pwd";
+my $backup_dir="/var/lib/nethserver/backup/rh-mysql56/";
+my $password = esmith::util::genRandomPassword($passwd_file);
+
+#if ( -f "/var/opt/rh/rh-mysql56/lib/mysql/mysql/user.frm" ) {
+#   exit(0);
+#}
+
+# start mysql if needed
+#system("/sbin/service rh-mysql56-mysqld start");
+#system("/sbin/service rh-mysql56-mysqld stop");
+#system("/opt/rh/rh-mysql56/root/usr/libexec/mysqld --datadir=/var/opt/rh/rh-mysql56/lib/mysql --bootstrap --user=mysql --skip-grant-tables --explicit_defaults_for_timestamp < /opt/rh/rh-mysql56/root/bin/set.password");
+#
+
+## load existing dumps 
+if ( -f "$backup_dir/mysql.dump" ) {
+    system("/etc/e-smith/events/actions/rh-mysql56-load-tables");
+} else { # or initialize the server
+#    if ( system("/sbin/service rh-mysql56-mysqld status >/dev/null") != 0 ) {
+#        system("/sbin/service rh-mysql56-mysqld start");
+system("/sbin/service rh-mysql56-mysqld start");
+system("/sbin/service rh-mysql56-mysqld stop");
+system("/opt/rh/rh-mysql56/root/usr/libexec/mysqld --datadir=/var/opt/rh/rh-mysql56/lib/mysql --bootstrap --user=mysql --skip-grant-tables --explicit_defaults_for_timestamp < /opt/rh/rh-mysql56/root/bin/set.password");
+    }
+
+#    my $exp = new Expect;
+#    $exp->raw_pty(1);  
+#    $exp->spawn($command) or die "Cannot spawn $command: $!\n";
+#
+#    $exp->expect($timeout,
+#        [ qr/Enter current password for root \(enter for none\):\s*/ => sub { my $exp = shift;
+#                          $exp->send("\n");
+#                          exp_continue; } ],
+#
+#        [ qr/Set root password\?/ => sub { my $exp = shift;
+#                          $exp->send("y\n");
+#                          exp_continue; } ],
+#
+#        [ qr/New password:/ => sub { my $exp = shift;
+#                          $exp->send("$password\n");
+#                          exp_continue; } ],
+#
+#        [ qr/Re-enter new password:/ => sub { my $exp = shift;
+#                          $exp->send("$password\n");
+#                          exp_continue; } ],
+#
+#        [ qr/Remove anonymous users\?/ => sub { my $exp = shift;
+#                          $exp->send("y\n");
+#                          exp_continue; } ],
+#
+#        [ qr/Disallow root login remotely\?/ => sub { my $exp = shift;
+#                          $exp->send("y\n");
+#                          exp_continue; } ],
+#        [ qr/Remove test database and access to it\?/ => sub { my $exp = shift;
+#                          $exp->send("y\n");
+#                          exp_continue; } ],
+#
+#        [ qr/Reload privilege tables now\?/ => sub { my $exp = shift;
+#                          $exp->send("y\n");
+#                          exp_continue; } ],
+#
+#    );
+#
+#    $exp->soft_close();
+#}
+

@@ -1,0 +1,2 @@
+#!/bin/bash
+/opt/rh/rh-mysql56/root/usr/bin/mysql_plugin "$@"
