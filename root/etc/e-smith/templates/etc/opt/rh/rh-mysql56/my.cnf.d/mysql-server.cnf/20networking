@@ -1,4 +1,4 @@
 {
-    my $localonly = ${'fw-rh-mysql56-mysqld'}{'LocalNetworkingOnly'} || "no";
+    my $localonly = ${'rh-mysql56-mysqld'}{'LocalNetworkingOnly'} || "no";
     $OUT = ($localonly eq 'yes') ? "skip-networking" : "# networking is enabled";
 }

@@ -1,0 +1,13 @@
+{
+my $mysql56 = ${'rh-mysql56-mysqld'}{'status'} || 'disabled';
+my $tcp = ${'rh-mysql56-mysqld'}{'TCPPort'} || '3307';
+my $access = ${'rh-mysql56-mysqld'}{'access'} || 'none';
+
+if (($mysql56 eq 'enabled') && (($access eq 'public')|| ($access eq 'private'))) {
+
+    $OUT .= "#\n# rh-mysql56-mysqld\n#\n";
+    $OUT .= "?COMMENT Enable rh-mysql56-mysqld\n";
+    $OUT .= "ACCEPT\tnet\t\$FW\ttcp\t$tcp\n" if ($access eq 'public');
+    $OUT .= "ACCEPT\tloc\t\$FW\ttcp\t$tcp\n";
+    }
+}

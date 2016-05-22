@@ -5,7 +5,7 @@ if [ ! -d $backup_dir ]; then
     mkdir -p $backup_dir
 fi
 
-status=$(/sbin/e-smith/config getprop fw-rh-mysql56-mysqld status)
+status=$(/sbin/e-smith/config getprop rh-mysql56-mysqld status)
 if [ "$status" = "disabled" ]
 then
     echo "rh-mysql56-mysqld is disabled - no tables dumped" >&2

@@ -15,8 +15,6 @@ event_actions($event,
 templates2events("/etc/opt/rh/rh-mysql56/my.cnf.d/mysql-server.cnf",  $event);
 templates2events("/root/.my.cnf",  $event);
 templates2events("/opt/rh/rh-mysql56/root/bin/set.password",  $event);
-#event_services($event, 'rh-mysql56-mysqld' => 'restart');
-
 
 #--------------------------------------------------
 # actions for nethserver-rh-mysql56-save event
@@ -30,15 +28,6 @@ templates2events("/root/.my.cnf",  $event);
 event_actions($event,
               'firewall-adjust' => '10',
               'rh-mysql56-mysqld_service' => '20');
-#event_services($event, 'rh-mysql56-mysqld' => 'restart');
-
-
-#--------------------------------------------------
-# actions for migration-import event
-#--------------------------------------------------
-
-#$event = "migration-import";
-#event_actions($event, 'nethserver-mysql-migrate' => 50);
 
 
 #--------------------------------------------------
@@ -68,7 +57,6 @@ event_actions($event,
 
 templates2events("/etc/my.cnf",  $event);
 templates2events("/root/.my.cnf",  $event);
-#event_services($event, 'rh-mysql56-mysqld' => 'restart');
 
 
 exit;

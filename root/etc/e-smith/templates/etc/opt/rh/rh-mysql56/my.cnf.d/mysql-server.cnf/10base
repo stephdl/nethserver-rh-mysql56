@@ -14,6 +14,6 @@ user=mysql
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
 {
-    my $port = ${'fw-rh-mysql56-mysqld'}{'TCPPort'} || "3307";
+    my $port = ${'rh-mysql56-mysqld'}{'TCPPort'} || "3307";
     $OUT .= "port=$port\n";
 }

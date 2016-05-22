@@ -1,5 +1,5 @@
 {
-  $max = ${'fw-rh-mysql56-mysqld'}{'MaxAllowedPacket'} || '';
+  $max = ${'rh-mysql56-mysqld'}{'MaxAllowedPacket'} || '';
   return "max_allowed_packet=$max" unless ($max eq '');
   return "";
 }

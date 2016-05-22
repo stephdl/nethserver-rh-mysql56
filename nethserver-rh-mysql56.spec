@@ -1,6 +1,6 @@
 Summary: NethServer MySQL56 configuration and templates.
 Name: nethserver-rh-mysql56
-Version: 0.0.1
+Version: 0.0.2
 Release: 1%{?dist}
 License: GPL
 Group: Networking/Daemons
@@ -10,6 +10,7 @@ Requires: rh-mysql56
 Requires: nethserver-base
 Requires: nethserver-lib >= 1.0.1
 BuildRequires: nethserver-devtools
+Conflicts: nethserver-release < 6.7
 AutoReq: no
 
 
@@ -57,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 
 %changelog
+* Sun May 22 2016 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.2
+- backup and restore function added
+
 * Tue May 10 2016 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.1
 - First release
 
